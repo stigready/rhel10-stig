@@ -1,4 +1,6 @@
-# stigready/rhel10-stig
+# rhel10_stig — Ansible role (rhel10-stig)
+
+**Ansible hardening role** for **RHEL 10** (DISA STIG). Suitable for playbooks, Packer/Ansible provisioners, and golden-image pipelines. Search keywords: `ansible`, `ansible-role`, `compliance`, `devsecops`, `disa`, `disa-stig`, `hardening`, `infrastructure`, `openscap`, `redhat`, `rhel`, `rhel10`, `security`, `stig`.
 
 StigForge-exported Ansible role **`rhel10_stig`** · release **`0.2.2-private-review`**.
 Matrix cell status: **`green`**.
@@ -14,7 +16,7 @@ From **Ansible Galaxy** (after import; namespace `stigready`):
 ansible-galaxy role install stigready.rhel10_stig,0.2.2-private-review
 ```
 
-From **GitHub** (private or public):
+From **GitHub** (public):
 
 ```yaml
 # requirements.yml
@@ -36,7 +38,7 @@ Evidence was produced by **docker verify + OpenSCAP** on the factory CI run cite
 
 | Profile | Score | Floor | Gate | Ansible | Evidence tested (UTC) |
 |---|---:|---:|---|---|---|
-| `stig` | **98.57%** ✓ | 90.0% | PASS ✓ | rc 0 | 20260728T092711Z |
+| `stig` | **97.14%** ✓ | 90.0% | PASS ✓ | rc 0 | 20260728T111217Z |
 
 Full artifacts per profile: `compliance/releases/0.2.2-private-review/<profile>/` (`score.json`, `results.xml`, `report.html`, `evidence.json`, `evidence-report.html`, `poam.md`).
 
@@ -63,7 +65,7 @@ Or score your own `results.xml`: see **[compliance/README.md](compliance/README.
 
 ## Factory
 
-- Monorepo: [stigready/stigforge](https://github.com/stigready/stigforge) @ `49f1c019fbf7ba7f8edc345d79321ed45f9534de`
-- CI run: https://github.com/stigready/stigforge/actions/runs/30348467615
+- Monorepo: [stigready/stigforge](https://github.com/stigready/stigforge) @ `5601d6c388051bf9f7636b086d93888a709b8b31`
+- CI run: https://github.com/stigready/stigforge/actions/runs/30353408831
 - Catalog: [https://stigready.com/#stigforge](https://stigready.com/#stigforge)
 

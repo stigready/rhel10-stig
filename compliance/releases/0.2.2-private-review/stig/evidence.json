@@ -3,7 +3,7 @@
   "role": "rhel10_stig",
   "profile": "stig",
   "product": "rhel10",
-  "timestamp": "20260728T092711Z",
+  "timestamp": "20260728T111217Z",
   "outcome": "success",
   "matrix": {
     "role": "rhel10_stig",
@@ -14,7 +14,7 @@
     "xccdf_profile": "xccdf_org.ssgproject.content_profile_stig",
     "ssg_datastream": "ssg-rhel10-ds.xml",
     "verify_datastream_rocky": "ssg-rl10-ds.xml",
-    "matrix_status": "generated",
+    "matrix_status": "green",
     "required": true,
     "min_score": 90
   },
@@ -32,16 +32,16 @@
     },
     "openscap": {
       "status": "pass",
-      "score": 98.57,
-      "pass": 69,
-      "fail": 1,
+      "score": 97.14,
+      "pass": 68,
+      "fail": 2,
       "floor": 90.0,
       "enforce": true,
       "meets_floor": true
     }
   },
   "poam": {
-    "total_exceptions": 1,
+    "total_exceptions": 2,
     "policy_exempt_count": 32
   },
   "artifacts": [
@@ -49,7 +49,7 @@
       "name": "OpenSCAP score summary (JSON)",
       "desc": "pass/fail counts, floor gate, failure rule ids",
       "local": "score.json",
-      "bytes": 343
+      "bytes": 379
     },
     {
       "name": "OpenSCAP results (XCCDF)",
@@ -61,13 +61,13 @@
       "name": "OpenSCAP ARF",
       "desc": "Asset Reporting Format \u2014 POA&M source (stigready parity)",
       "local": "arf.xml",
-      "bytes": 28538075
+      "bytes": 28833152
     },
     {
       "name": "OpenSCAP report (HTML)",
       "desc": "human-readable SSG scorecard",
       "local": "report.html",
-      "bytes": 3243663
+      "bytes": 3285302
     },
     {
       "name": "OpenSCAP score line",
@@ -79,13 +79,13 @@
       "name": "POA&M",
       "desc": "failures + policy-exempt inventory",
       "local": "poam.md",
-      "bytes": 1451
+      "bytes": 1485
     },
     {
       "name": "Ansible apply log",
       "desc": "role application inside verify container",
       "local": "ansible.log",
-      "bytes": 733188
+      "bytes": 768466
     },
     {
       "name": "Ansible exit code",
@@ -103,19 +103,7 @@
       "name": "Score gate stdout",
       "desc": "stigforge score CLI output",
       "local": "score.stdout",
-      "bytes": 343
-    },
-    {
-      "name": "Evidence report (HTML)",
-      "desc": "auditor-facing bundle index",
-      "local": "evidence-report.html",
-      "bytes": 5372
-    },
-    {
-      "name": "Evidence manifest",
-      "desc": "machine-readable index for this verify cell",
-      "local": "evidence.json",
-      "bytes": 2898
+      "bytes": 379
     }
   ]
 }
