@@ -1,0 +1,6 @@
+stigforge_role: rhel10_stig
+stigforge_profile: stig
+stigforge_rules_enabled: true
+stigforge_min_score: 90
+stigforge_ssg_datastream: ssg-rhel10-ds.xml
+stigforge_ssg_profile: xccdf_org.ssgproject.content_profile_stig
