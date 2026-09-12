@@ -1,6 +1,6 @@
 # StigForge-owned gap-fill: `enable_authselect` (CCE-89732-2).
 #
-# Upstream status (ComplianceAsCode/content, checked against v0.1.78/0.1.81): the
+# Upstream status (ComplianceAsCode/content, checked against v0.1.82): the
 # RHEL10 STIG profile (rhel10-playbook-stig.yml) does not ship the
 # `enable_authselect` rule that RHEL8/RHEL9 STIG profiles include. Several
 # downstream PAM rules in the same playbook (e.g. "Ensure PAM Displays Last
