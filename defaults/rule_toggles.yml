@@ -50,7 +50,6 @@ rhel10stig_aide_scan_notification: true
 rhel10stig_aide_use_fips_hashes: true
 rhel10stig_aide_verify_acls: true
 rhel10stig_aide_verify_ext_attributes: true
-rhel10stig_always: true
 rhel10stig_audit_privileged_commands_init: true
 rhel10stig_audit_privileged_commands_poweroff: true
 rhel10stig_audit_privileged_commands_reboot: true
