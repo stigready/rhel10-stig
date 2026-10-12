@@ -363,6 +363,7 @@ rhel10stig_sshd_set_loglevel_verbose: true
 rhel10stig_sshd_x11_use_localhost: true
 rhel10stig_sssd_offline_cred_expiration: true
 rhel10stig_sudo_remove_no_authenticate: true
+rhel10stig_sudo_require_reauthentication: true
 rhel10stig_sudoers_validate_passwd: true
 rhel10stig_sysctl_fs_protected_hardlinks: true
 rhel10stig_sysctl_fs_protected_symlinks: true
