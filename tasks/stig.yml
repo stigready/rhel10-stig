@@ -11264,6 +11264,38 @@
         OpenSCAP evaluates the resulting system state independently.'
   when: (stigforge_rules_enabled | default(true) | bool) and (rhel10stig_accounts_password_pam_difok | default(true) | bool)
 - block:
+  - name: Ensure PAM Enforces Password Requirements - Enforce for root User
+    ansible.builtin.lineinfile:
+      path: /etc/security/pwquality.conf
+      create: true
+      regexp: ''
+      line: enforce_for_root
+      state: present
+    when:
+    - '"kernel-core" in ansible_facts.packages'
+    - '"libpwquality" in ansible_facts.packages'
+    tags:
+    - CCE-90134-8
+    - DISA-STIG-RHEL-10-600405
+    - NIST-800-53-CM-6(a)
+    - NIST-800-53-IA-5(1)(a)
+    - NIST-800-53-IA-5(4)
+    - NIST-800-53-IA-5(c)
+    - accounts_password_pam_enforce_root
+    - low_complexity
+    - low_disruption
+    - medium_severity
+    - no_reboot_needed
+    - restrict_strategy
+  rescue:
+  - name: 'StigForge: continue after error in ''Ensure PAM Enforces Password Requirements - Enforce for root User'' (OpenSCAP
+      is the score gate)'
+    ansible.builtin.debug:
+      msg: 'StigForge: ''Ensure PAM Enforces Password Requirements - Enforce for root User'' raised an error (module or templating)
+        and was skipped; continuing so later rules still run. OpenSCAP evaluates the resulting system state independently.'
+  when: (stigforge_rules_enabled | default(true) | bool) and (rhel10stig_accounts_password_pam_enforce_root | default(true)
+    | bool)
+- block:
   - name: Ensure PAM Enforces Password Requirements - Minimum Lowercase Characters - Find pwquality.conf.d files
     ansible.builtin.find:
       paths: /etc/security/pwquality.conf.d/
@@ -17533,6 +17565,193 @@
         (module or templating) and was skipped; continuing so later rules still run. OpenSCAP evaluates the resulting system
         state independently.'
   when: (stigforge_rules_enabled | default(true) | bool) and (rhel10stig_rsyslog_omfwd_tls | default(true) | bool)
+- block:
+  - name: 'Ensure remote access methods are monitored in Rsyslog: Set facts'
+    ansible.builtin.set_fact:
+      conf_files:
+      - /etc/rsyslog.conf
+      remote_methods:
+      - selector: auth.*
+        regexp: ^[^#]*auth\.\*.*$
+        location: /var/log/secure
+      - selector: authpriv.*
+        regexp: ^[^#]*authpriv\.\*.*$
+        location: /var/log/secure
+      - selector: daemon.*
+        regexp: ^[^#]*daemon\.\*.*$
+        location: /var/log/messages
+    when:
+    - '"kernel-core" in ansible_facts.packages'
+    - '"rsyslog" in ansible_facts.packages'
+    tags:
+    - CCE-87341-4
+    - DISA-STIG-RHEL-10-200647
+    - NIST-800-53-AC-17(1)
+    - configure_strategy
+    - low_complexity
+    - medium_disruption
+    - medium_severity
+    - no_reboot_needed
+    - rsyslog_remote_access_monitoring
+  rescue:
+  - name: 'StigForge: continue after error in ''Ensure remote access methods are monitored in Rsyslog: Set facts'' (OpenSCAP
+      is the score gate)'
+    ansible.builtin.debug:
+      msg: 'StigForge: ''Ensure remote access methods are monitored in Rsyslog: Set facts'' raised an error (module or templating)
+        and was skipped; continuing so later rules still run. OpenSCAP evaluates the resulting system state independently.'
+  when: (stigforge_rules_enabled | default(true) | bool) and (rhel10stig_rsyslog_remote_access_monitoring | default(true)
+    | bool)
+- block:
+  - name: 'Ensure remote access methods are monitored in Rsyslog: Ensure rsyslog.conf exists'
+    ansible.builtin.file:
+      path: '{{ conf_files.0 }}'
+      state: touch
+      access_time: preserve
+      modification_time: preserve
+      mode: 420
+    when:
+    - '"kernel-core" in ansible_facts.packages'
+    - '"rsyslog" in ansible_facts.packages'
+    tags:
+    - CCE-87341-4
+    - DISA-STIG-RHEL-10-200647
+    - NIST-800-53-AC-17(1)
+    - configure_strategy
+    - low_complexity
+    - medium_disruption
+    - medium_severity
+    - no_reboot_needed
+    - rsyslog_remote_access_monitoring
+  rescue:
+  - name: 'StigForge: continue after error in ''Ensure remote access methods are monitored in Rsyslog: Ensure rsyslog.conf
+      exists'' (OpenSCAP is the score gate)'
+    ansible.builtin.debug:
+      msg: 'StigForge: ''Ensure remote access methods are monitored in Rsyslog: Ensure rsyslog.conf exists'' raised an error
+        (module or templating) and was skipped; continuing so later rules still run. OpenSCAP evaluates the resulting system
+        state independently.'
+  when: (stigforge_rules_enabled | default(true) | bool) and (rhel10stig_rsyslog_remote_access_monitoring | default(true)
+    | bool)
+- block:
+  - name: 'Ensure remote access methods are monitored in Rsyslog: Gather conf.d files'
+    ansible.builtin.find:
+      patterns:
+      - '*.conf'
+      paths:
+      - /etc/rsyslog.d
+    register: rsyslogd
+    when:
+    - '"kernel-core" in ansible_facts.packages'
+    - '"rsyslog" in ansible_facts.packages'
+    tags:
+    - CCE-87341-4
+    - DISA-STIG-RHEL-10-200647
+    - NIST-800-53-AC-17(1)
+    - configure_strategy
+    - low_complexity
+    - medium_disruption
+    - medium_severity
+    - no_reboot_needed
+    - rsyslog_remote_access_monitoring
+  rescue:
+  - name: 'StigForge: continue after error in ''Ensure remote access methods are monitored in Rsyslog: Gather conf.d files''
+      (OpenSCAP is the score gate)'
+    ansible.builtin.debug:
+      msg: 'StigForge: ''Ensure remote access methods are monitored in Rsyslog: Gather conf.d files'' raised an error (module
+        or templating) and was skipped; continuing so later rules still run. OpenSCAP evaluates the resulting system state
+        independently.'
+  when: (stigforge_rules_enabled | default(true) | bool) and (rhel10stig_rsyslog_remote_access_monitoring | default(true)
+    | bool)
+- block:
+  - name: 'Ensure remote access methods are monitored in Rsyslog: Set conf file(s)'
+    ansible.builtin.set_fact:
+      conf_files: '{{ conf_files + [item.path] }}'
+    loop: '{{ rsyslogd.files }}'
+    when:
+    - '"kernel-core" in ansible_facts.packages'
+    - '"rsyslog" in ansible_facts.packages'
+    - rsyslogd.matched > 0
+    tags:
+    - CCE-87341-4
+    - DISA-STIG-RHEL-10-200647
+    - NIST-800-53-AC-17(1)
+    - configure_strategy
+    - low_complexity
+    - medium_disruption
+    - medium_severity
+    - no_reboot_needed
+    - rsyslog_remote_access_monitoring
+  rescue:
+  - name: 'StigForge: continue after error in ''Ensure remote access methods are monitored in Rsyslog: Set conf file(s)''
+      (OpenSCAP is the score gate)'
+    ansible.builtin.debug:
+      msg: 'StigForge: ''Ensure remote access methods are monitored in Rsyslog: Set conf file(s)'' raised an error (module
+        or templating) and was skipped; continuing so later rules still run. OpenSCAP evaluates the resulting system state
+        independently.'
+  when: (stigforge_rules_enabled | default(true) | bool) and (rhel10stig_rsyslog_remote_access_monitoring | default(true)
+    | bool)
+- block:
+  - name: 'Ensure remote access methods are monitored in Rsyslog: Check for existing values'
+    ansible.builtin.lineinfile:
+      path: '{{ item.1 }}'
+      regexp: '{{ item.0.regexp }}'
+      state: absent
+    check_mode: true
+    changed_when: false
+    register: remote_method_values
+    loop: '{{ remote_methods|product(conf_files)|list }}'
+    when:
+    - '"kernel-core" in ansible_facts.packages'
+    - '"rsyslog" in ansible_facts.packages'
+    tags:
+    - CCE-87341-4
+    - DISA-STIG-RHEL-10-200647
+    - NIST-800-53-AC-17(1)
+    - configure_strategy
+    - low_complexity
+    - medium_disruption
+    - medium_severity
+    - no_reboot_needed
+    - rsyslog_remote_access_monitoring
+  rescue:
+  - name: 'StigForge: continue after error in ''Ensure remote access methods are monitored in Rsyslog: Check for existing
+      values'' (OpenSCAP is the score gate)'
+    ansible.builtin.debug:
+      msg: 'StigForge: ''Ensure remote access methods are monitored in Rsyslog: Check for existing values'' raised an error
+        (module or templating) and was skipped; continuing so later rules still run. OpenSCAP evaluates the resulting system
+        state independently.'
+  when: (stigforge_rules_enabled | default(true) | bool) and (rhel10stig_rsyslog_remote_access_monitoring | default(true)
+    | bool)
+- block:
+  - name: 'Ensure remote access methods are monitored in Rsyslog: Configure'
+    ansible.builtin.lineinfile:
+      path: /etc/rsyslog.conf
+      line: '{{ item.item.0.selector }} {{ item.item.0.location }}'
+      insertafter: ^.*\/var\/log\/secure.*$
+      create: true
+      mode: 420
+    loop: '{{ remote_method_values.results }}'
+    when:
+    - '"kernel-core" in ansible_facts.packages'
+    - '"rsyslog" in ansible_facts.packages'
+    - item.found == 0
+    tags:
+    - CCE-87341-4
+    - DISA-STIG-RHEL-10-200647
+    - NIST-800-53-AC-17(1)
+    - configure_strategy
+    - low_complexity
+    - medium_disruption
+    - medium_severity
+    - no_reboot_needed
+    - rsyslog_remote_access_monitoring
+  rescue:
+  - name: 'StigForge: continue after error in ''Ensure remote access methods are monitored in Rsyslog: Configure'' (OpenSCAP
+      is the score gate)'
+    ansible.builtin.debug:
+      msg: 'StigForge: ''Ensure remote access methods are monitored in Rsyslog: Configure'' raised an error (module or templating)
+        and was skipped; continuing so later rules still run. OpenSCAP evaluates the resulting system state independently.'
+  when: (stigforge_rules_enabled | default(true) | bool) and (rhel10stig_rsyslog_remote_access_monitoring | default(true)
+    | bool)
 - block:
   - name: Ensure rsyslog Does Not Accept Remote Messages Unless Acting As Log Server - Define Rsyslog Config Lines Regex in
       Legacy Syntax
@@ -42662,6 +42881,58 @@
         skipped; continuing so later rules still run. OpenSCAP evaluates the resulting system state independently.'
   when: (stigforge_rules_enabled | default(true) | bool) and (rhel10stig_configure_usbguard_auditbackend | default(true) |
     bool)
+- block:
+  - name: Generate USBGuard Policy
+    block:
+    - name: Check that the /etc/usbguard/rules.conf exists
+      ansible.builtin.stat:
+        path: /etc/usbguard/rules.conf
+      register: policy_file
+    - name: Create USBGuard Policy configuration
+      ansible.builtin.command: usbguard generate-policy
+      register: policy
+      when: not (policy_file is not skipped and policy_file.stat.exists) or (policy_file is not skipped and policy_file.stat.size)
+        == 0
+    - name: Copy the Generated Policy configuration to a persistent file
+      ansible.builtin.copy:
+        content: '{{ policy.stdout }}'
+        dest: /etc/usbguard/rules.conf
+        mode: 384
+      when: not (policy_file is not skipped and policy_file.stat.exists) or (policy_file is not skipped and policy_file.stat.size)
+        == 0
+    - name: Add comment into /etc/usbguard/rules.conf when system has no USB devices
+      ansible.builtin.lineinfile:
+        path: /etc/usbguard/rules.conf
+        line: '# No USB devices found'
+        state: present
+      when: not (policy_file is not skipped and policy_file.stat.exists) or (policy_file is not skipped and policy_file.stat.size)
+        == 0
+    - name: Enable service usbguard
+      ansible.builtin.systemd:
+        name: usbguard
+        enabled: 'yes'
+        state: started
+        masked: 'no'
+    when:
+    - ( ansible_architecture != "s390x" and "kernel-core" in ansible_facts.packages )
+    - '"usbguard" in ansible_facts.packages'
+    tags:
+    - CCE-88632-5
+    - DISA-STIG-RHEL-10-200562
+    - NIST-800-53-CM-8(3)(a)
+    - NIST-800-53-IA-3
+    - configure_strategy
+    - low_complexity
+    - low_disruption
+    - medium_severity
+    - no_reboot_needed
+    - usbguard_generate_policy
+  rescue:
+  - name: 'StigForge: continue after error in ''Generate USBGuard Policy'' (OpenSCAP is the score gate)'
+    ansible.builtin.debug:
+      msg: 'StigForge: ''Generate USBGuard Policy'' raised an error (module or templating) and was skipped; continuing so
+        later rules still run. OpenSCAP evaluates the resulting system state independently.'
+  when: (stigforge_rules_enabled | default(true) | bool) and (rhel10stig_usbguard_generate_policy | default(true) | bool)
 - block:
   - name: Switch to multi-user runlevel
     ansible.builtin.file:
