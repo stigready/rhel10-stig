@@ -158,6 +158,36 @@
         was skipped; continuing so later rules still run. OpenSCAP evaluates the resulting system state independently.'
   when: (stigforge_rules_enabled | default(true) | bool) and (rhel10stig_enable_authselect | default(true) | bool)
 - block:
+  - name: Install the audit-rules package (provides auditctl, augenrules and audit-rules.service on EL10)
+    ansible.builtin.package:
+      name: audit-rules
+      state: present
+    tags:
+    - package_audit_installed
+    - configure_strategy
+    - low_complexity
+    - low_disruption
+    - medium_severity
+    - no_reboot_needed
+    - stigforge_gapfill
+  rescue:
+  - name: 'StigForge: continue after error in ''Install the audit-rules package (provides auditctl, augenrules and audit-rules.service
+      on EL10)'' (OpenSCAP is the score gate)'
+    ansible.builtin.debug:
+      msg: 'StigForge: ''Install the audit-rules package (provides auditctl, augenrules and audit-rules.service on EL10)''
+        raised an error (module or templating) and was skipped; continuing so later rules still run. OpenSCAP evaluates the
+        resulting system state independently.'
+  when: (stigforge_rules_enabled | default(true) | bool) and (rhel10stig_package_audit_installed | default(true) | bool)
+- name: 'StigForge: refresh package facts after ''Install the audit-rules package (provides auditctl, augenrules and audit-rules.service
+    on EL10)'' installed a package (stigforge#83)'
+  ansible.builtin.package_facts:
+    manager: auto
+  tags:
+  - medium_severity
+  - always
+  - stigforge
+  - facts
+- block:
   - name: Ensure aide is installed
     ansible.builtin.package:
       name: aide
@@ -69249,36 +69279,32 @@
         so later rules still run. OpenSCAP evaluates the resulting system state independently.'
   when: (stigforge_rules_enabled | default(true) | bool) and (rhel10stig_file_permissions_ungroupowned | default(true) | bool)
 - block:
-  - name: FIPS | Check whether FIPS mode is already enabled
-    ansible.builtin.command: fips-mode-setup --check
-    register: stigforge_fips_check
-    changed_when: false
-    failed_when: false
+  - name: FIPS | Read the kernel FIPS flag (RHEL 10 has no fips-mode-setup; the factory enables and asserts FIPS)
+    ansible.builtin.slurp:
+      src: /proc/sys/crypto/fips_enabled
+    register: stigforge_fips_flag
     tags:
     - CCE-86982-6
     - high_severity
   rescue:
-  - name: 'StigForge: continue after error in ''FIPS | Check whether FIPS mode is already enabled'' (OpenSCAP is the score
-      gate)'
+  - name: 'StigForge: continue after error in ''FIPS | Read the kernel FIPS flag (RHEL 10 has no fips-mode-setup; the factory
+      enables and asserts FIPS)'' (OpenSCAP is the score gate)'
     ansible.builtin.debug:
-      msg: 'StigForge: ''FIPS | Check whether FIPS mode is already enabled'' raised an error (module or templating) and was
-        skipped; continuing so later rules still run. OpenSCAP evaluates the resulting system state independently.'
+      msg: 'StigForge: ''FIPS | Read the kernel FIPS flag (RHEL 10 has no fips-mode-setup; the factory enables and asserts
+        FIPS)'' raised an error (module or templating) and was skipped; continuing so later rules still run. OpenSCAP evaluates
+        the resulting system state independently.'
 - block:
-  - name: FIPS | Enable FIPS mode (CCE-86982-6)
-    ansible.builtin.command: fips-mode-setup --enable
-    register: stigforge_fips_enable
-    when: '''FIPS mode is enabled'' not in (stigforge_fips_check.stdout | default(''''))'
-    changed_when: stigforge_fips_enable.rc == 0
-    failed_when: stigforge_fips_enable.rc != 0
+  - name: FIPS | Record the FIPS state found by the role
+    ansible.builtin.debug:
+      msg: fips_enabled={{ stigforge_fips_flag.content | b64decode | trim }} (enforced by the factory's fips role, not here)
     tags:
     - CCE-86982-6
     - high_severity
-    - reboot_required
   rescue:
-  - name: 'StigForge: continue after error in ''FIPS | Enable FIPS mode (CCE-86982-6)'' (OpenSCAP is the score gate)'
+  - name: 'StigForge: continue after error in ''FIPS | Record the FIPS state found by the role'' (OpenSCAP is the score gate)'
     ansible.builtin.debug:
-      msg: 'StigForge: ''FIPS | Enable FIPS mode (CCE-86982-6)'' raised an error (module or templating) and was skipped; continuing
-        so later rules still run. OpenSCAP evaluates the resulting system state independently.'
+      msg: 'StigForge: ''FIPS | Record the FIPS state found by the role'' raised an error (module or templating) and was skipped;
+        continuing so later rules still run. OpenSCAP evaluates the resulting system state independently.'
 - block:
   - name: Product hardening | Ensure kernel module 'cramfs' is disabled
     ansible.builtin.copy:
@@ -69488,10 +69514,10 @@
         or templating) and was skipped; continuing so later rules still run. OpenSCAP evaluates the resulting system state
         independently.'
 - block:
-  - name: Install the smart card packages for multifactor authentication (openssl-pkcs11)
+  - name: Install the smart card packages for multifactor authentication (pkcs11-provider)
     ansible.builtin.dnf:
       name:
-      - openssl-pkcs11
+      - pkcs11-provider
       state: present
     tags:
     - install_smartcard_packages
@@ -69501,14 +69527,14 @@
     - medium_severity
     - no_reboot_needed
   rescue:
-  - name: 'StigForge: continue after error in ''Install the smart card packages for multifactor authentication (openssl-pkcs11)''
+  - name: 'StigForge: continue after error in ''Install the smart card packages for multifactor authentication (pkcs11-provider)''
       (OpenSCAP is the score gate)'
     ansible.builtin.debug:
-      msg: 'StigForge: ''Install the smart card packages for multifactor authentication (openssl-pkcs11)'' raised an error
+      msg: 'StigForge: ''Install the smart card packages for multifactor authentication (pkcs11-provider)'' raised an error
         (module or templating) and was skipped; continuing so later rules still run. OpenSCAP evaluates the resulting system
         state independently.'
   when: (stigforge_rules_enabled | default(true) | bool) and (rhel10stig_install_smartcard_packages | default(true) | bool)
-- name: 'StigForge: refresh package facts after ''Install the smart card packages for multifactor authentication (openssl-pkcs11)''
+- name: 'StigForge: refresh package facts after ''Install the smart card packages for multifactor authentication (pkcs11-provider)''
     installed a package (stigforge#83)'
   ansible.builtin.package_facts:
     manager: auto

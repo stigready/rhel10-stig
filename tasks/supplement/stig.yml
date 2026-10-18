@@ -53,39 +53,28 @@
   tags:
     - file_permissions_ungroupowned
 
-# FIPS mode - CCE-86982-6. Owner decision 2026-09-20: enablement belongs to the ROLE, and it is
-# NOT a toggle. FIPS is derived from the STIG profile, never chosen: every `stig` image is
-# FIPS and nothing else ever is. A per-rule variable would make it a choice, so these tasks
-# deliberately carry only DISA/CCE tags - the generator derives a toggle from an SSG rule-id
-# tag, and these do not match that pattern, so no `{{ role }}_enable_fips_mode` is created.
+# FIPS mode - CCE-86982-6. Owner decision 2026-09-20: FIPS is derived from the STIG profile, never chosen: every `stig` image is
+# FIPS and nothing else ever is. These tasks carry only DISA/CCE tags, so the generator creates no toggle for them.
 #
-# SSG ships no ANSIBLE remediation for this rule (only `urn:xccdf:fix:script:sh` and an
-# osbuild blueprint), which is why the generator emits nothing for it and it has to live
-# here in the supplement - exactly what the supplement is for.
-#
-# Scope is enablement only. The reboot, the post-reboot verification, the `boot=UUID=`
-# cmdline repair for a separate /boot, and pinning the FIPS kernel against the autoremover
-# stay in the factory: they are build orchestration, not configuration.
-- name: FIPS | Check whether FIPS mode is already enabled
-  ansible.builtin.command: fips-mode-setup --check
-  register: stigforge_fips_check
-  changed_when: false
-  failed_when: false
+# RHEL 10 differs from RHEL 8/9: it has no fips-mode-setup (stigready rhel-10:stig leg 9107338fb344: `fips-mode-setup --enable` ->
+# "No such file or directory"), and the benchmark says FIPS can only be enabled by booting the installer with fips=1 (ssg-rhel10-ds.xml
+# 0.1.82, enable_fips_mode). Enablement on EL10 is therefore the factory's (how: an owner decision in stigready), and the factory's fips
+# role already fails the build unless fips_enabled=1 after its FIPS reboot. The role does not pretend to enable it; it records the state
+# it found so the build log shows it, and OpenSCAP scores enable_fips_mode on the finished image.
+- name: FIPS | Read the kernel FIPS flag (RHEL 10 has no fips-mode-setup; the factory enables and asserts FIPS)
+  ansible.builtin.slurp:
+    src: /proc/sys/crypto/fips_enabled
+  register: stigforge_fips_flag
   tags:
     - CCE-86982-6
     - high_severity
 
-- name: FIPS | Enable FIPS mode (CCE-86982-6)
-  ansible.builtin.command: fips-mode-setup --enable
-  register: stigforge_fips_enable
-  # Idempotency guard, not an opt-out: re-running on an already-FIPS host is a no-op.
-  when: "'FIPS mode is enabled' not in (stigforge_fips_check.stdout | default(''))"
-  changed_when: stigforge_fips_enable.rc == 0
-  failed_when: stigforge_fips_enable.rc != 0
+- name: FIPS | Record the FIPS state found by the role
+  ansible.builtin.debug:
+    msg: "fips_enabled={{ stigforge_fips_flag.content | b64decode | trim }} (enforced by the factory's fips role, not here)"
   tags:
     - CCE-86982-6
     - high_severity
-    - reboot_required
 
 # ---------------------------------------------------------------------------------------
 # Beyond-benchmark product hardening, moved out of the factory (decision 0021: StigForge
@@ -250,10 +239,13 @@
 # RHEL 9 STIG scan on the pinned SSG 0.1.82). Both are ordinary configuration, applied rather than exempted. The rsyslog line is the
 # STIG's own fix and satisfies the three OVAL checks (auth.*, authpriv.*, daemon.*; tests/unit/test_el_stig_smartcard_rsyslog.py).
 # ---------------------------------------------------------------------------------------------
-- name: Install the smart card packages for multifactor authentication (openssl-pkcs11)
+# RHEL 10: OpenSSL engines are gone; the benchmark's OVAL for install_smartcard_packages checks pkcs11-provider (ssg-rhel10-ds.xml
+# 0.1.82, "package pkcs11-provider is installed"). openssl-pkcs11 does not exist on RHEL 10 (leg 9107338fb344: "No package
+# openssl-pkcs11 available").
+- name: Install the smart card packages for multifactor authentication (pkcs11-provider)
   ansible.builtin.dnf:
     name:
-    - openssl-pkcs11
+    - pkcs11-provider
     state: present
   tags:
   - install_smartcard_packages

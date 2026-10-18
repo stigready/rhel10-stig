@@ -118,3 +118,21 @@
   - medium_severity
   - no_reboot_needed
   - stigforge_gapfill
+
+# StigForge-owned gap-fill: install the `audit-rules` package on EL10 (same fix as rhel10_cis cis-l2-pre.yml).
+# On EL10 (audit 4.0.x) auditctl, augenrules and audit-rules.service ship in the separate `audit-rules` subpackage; the StigReady
+# base image has `audit` only. Without it the STIG audit rules are never loaded, every audit_rules_* OVAL check fails, and the
+# role's own auditd check has no auditctl to call (stigready rhel-10:stig leg 9107338fb344, 2026-10-18: "auditctl: No such file or
+# directory"; base image stigready-base-rhel10-v1.0.8 has audit-4.0.3-5.el10 and no /usr/sbin/auditctl).
+- name: Install the audit-rules package (provides auditctl, augenrules and audit-rules.service on EL10)
+  ansible.builtin.package:
+    name: audit-rules
+    state: present
+  tags:
+  - package_audit_installed
+  - configure_strategy
+  - low_complexity
+  - low_disruption
+  - medium_severity
+  - no_reboot_needed
+  - stigforge_gapfill
