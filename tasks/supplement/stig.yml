@@ -283,6 +283,57 @@
   - no_reboot_needed
 
 # ---------------------------------------------------------------------------------------------
+# chronyd_server_directive and use_pam_wheel_for_su (both in the RHEL 10 stig profile; the STIG index has no DISA id for RHEL 10
+# yet). The SSG 0.1.82 rhel10 stig playbook carries no remediation for use_pam_wheel_for_su, and its chrony remediation skips when
+# chrony.conf already has a pool line, so neither was applied: stigready rhel-10:stig leg eed92851e7a7 (2026-10-19, the first RHEL 10
+# STIG to reach the scan) failed both. The ARF shows why: the OVAL server object (`^[\s]*server.*$`) and the pam_wheel use_uid
+# object both collected nothing, i.e. the lines were missing, not wrong.
+# ---------------------------------------------------------------------------------------------
+# chronyd_server_directive: at least one `server` line and no indented `pool` line. The RHEL 10 OVAL's no-pool test only matches
+# indented `pool` lines (`^[\s]+pool.*$`, ssg-rhel10-ds.xml), and it passed on the leg, so the image's column-0 pool line is fine.
+# 169.254.169.123 is the Amazon Time Sync Service, the AWS-recommended source and the one reachable from every VPC without internet
+# access. Same task as rhel8_stig and rhel9_stig.
+- name: Configure the Amazon Time Sync Service as a chrony server (chronyd_server_directive)
+  ansible.builtin.lineinfile:
+    path: /etc/chrony.conf
+    regexp: '^server\s'
+    line: 'server 169.254.169.123 prefer iburst minpoll 4 maxpoll 4'
+    create: true
+    mode: '0644'
+  tags:
+  - chronyd_server_directive
+  - configure_strategy
+  - low_complexity
+  - low_disruption
+  - medium_severity
+  - no_reboot_needed
+
+# use_pam_wheel_for_su: the OVAL wants an active `auth required pam_wheel.so ... use_uid` line in /etc/pam.d/su (no group= needed;
+# that is the separate use_pam_wheel_group_for_su, not in this profile). The EL /etc/pam.d/su carries the line commented out
+# (`#auth required pam_wheel.so use_uid`), so the regexp also matches the commented form and enables it in place, ahead of the
+# system-auth substack; if no such line exists it is appended (still in the auth stack, after pam_rootok).
+- name: Ensure wheel group exists for su restriction (use_pam_wheel_for_su)
+  ansible.builtin.group:
+    name: wheel
+    state: present
+  tags:
+  - use_pam_wheel_for_su
+
+- name: Require wheel group membership for su (use_pam_wheel_for_su)
+  ansible.builtin.lineinfile:
+    path: /etc/pam.d/su
+    regexp: '^#?\s*auth\s+required\s+pam_wheel\.so'
+    line: "auth             required        pam_wheel.so use_uid"
+    state: present
+  tags:
+  - use_pam_wheel_for_su
+  - configure_strategy
+  - low_complexity
+  - low_disruption
+  - medium_severity
+  - no_reboot_needed
+
+# ---------------------------------------------------------------------------------------------
 # Leave auditd running. The generated rules restart auditd after editing them (`service auditd restart`, more than once per role);
 # on rhel-9-arm64:cis-l2 (stigready, 2026-10-16) the second restart 14 s after the first stopped auditd and never started it. With
 # the rules immutable (-e 2) and nothing reading events, the audit backlog fills and every audited syscall waits, which wedged new
@@ -301,8 +352,9 @@
   - no_reboot_needed
 
 - name: Product hardening | auditd must be running (a stopped auditd with immutable rules wedges every audited syscall)
-  # RHEL 10 CIS L1 does not install audit (rhel-10:cis-l1 leg b1a2dace6686: auditctl not found); only where auditd exists.
-  when: "'audit' in ansible_facts.packages"
+  # On EL10 auditctl ships in the separate audit-rules subpackage, which CIS L1 does not install even when audit is present
+  # (rhel-10:cis-l1 leg 72b2316e6e57, 2026-10-19: "[Errno 2] No such file or directory: b'auditctl'"). Guard on the binary's package.
+  when: "'audit-rules' in ansible_facts.packages"
   ansible.builtin.command: auditctl -s
   register: stigforge_auditd_status
   changed_when: false

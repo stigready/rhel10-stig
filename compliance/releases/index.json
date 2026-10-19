@@ -98,5 +98,10 @@
     "version": "0.3.41",
     "role": "rhel10_stig",
     "matrix_status": "green"
+  },
+  {
+    "version": "0.3.42",
+    "role": "rhel10_stig",
+    "matrix_status": "green"
   }
 ]

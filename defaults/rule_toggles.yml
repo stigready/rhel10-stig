@@ -142,6 +142,7 @@ rhel10stig_banner_etc_issue: '{{ rhel10stig_RHEL_10_700040 | default(true) }}'
 rhel10stig_chronyd_client_only: '{{ rhel10stig_RHEL_10_200542 | default(true) }}'
 rhel10stig_chronyd_no_chronyc_network: '{{ rhel10stig_RHEL_10_200543 | default(true) }}'
 rhel10stig_chronyd_or_ntpd_set_maxpoll: '{{ rhel10stig_RHEL_10_800040 | default(true) }}'
+rhel10stig_chronyd_server_directive: true
 rhel10stig_chronyd_specify_remote_server: '{{ rhel10stig_RHEL_10_800040 | default(true) }}'
 rhel10stig_clean_components_post_updating: '{{ rhel10stig_RHEL_10_200000 | default(true) }}'
 rhel10stig_configure_bind_crypto_policy: '{{ rhel10stig_RHEL_10_300080 | default(true) }}'
@@ -409,5 +410,6 @@ rhel10stig_sysctl_net_ipv6_conf_default_accept_redirects: '{{ rhel10stig_RHEL_10
 rhel10stig_sysctl_net_ipv6_conf_default_accept_source_route: '{{ rhel10stig_RHEL_10_800280 | default(true) }}'
 rhel10stig_tftp_uses_secure_mode_systemd: '{{ rhel10stig_RHEL_10_800310 | default(true) }}'
 rhel10stig_usbguard_generate_policy: '{{ rhel10stig_RHEL_10_200562 | default(true) }}'
+rhel10stig_use_pam_wheel_for_su: true
 rhel10stig_wireless_disable_interfaces: '{{ rhel10stig_RHEL_10_700870 | default(true) }}'
 rhel10stig_xwindows_runlevel_target: '{{ rhel10stig_RHEL_10_700940 | default(true) }}'
