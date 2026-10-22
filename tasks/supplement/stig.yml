@@ -53,14 +53,6 @@
   tags:
     - file_permissions_ungroupowned
 
-# FIPS mode - CCE-86982-6. Owner decision 2026-09-20: FIPS is derived from the STIG profile, never chosen: every `stig` image is
-# FIPS and nothing else ever is. These tasks carry only DISA/CCE tags, so the generator creates no toggle for them.
-#
-# RHEL 10 differs from RHEL 8/9: it has no fips-mode-setup (stigready rhel-10:stig leg 9107338fb344: `fips-mode-setup --enable` ->
-# "No such file or directory"), and the benchmark says FIPS can only be enabled by booting the installer with fips=1 (ssg-rhel10-ds.xml
-# 0.1.82, enable_fips_mode). Enablement on EL10 is therefore the factory's (how: an owner decision in stigready), and the factory's fips
-# role already fails the build unless fips_enabled=1 after its FIPS reboot. The role does not pretend to enable it; it records the state
-# it found so the build log shows it, and OpenSCAP scores enable_fips_mode on the finished image.
 - name: FIPS | Read the kernel FIPS flag (RHEL 10 has no fips-mode-setup; the factory enables and asserts FIPS)
   ansible.builtin.slurp:
     src: /proc/sys/crypto/fips_enabled
@@ -76,25 +68,6 @@
     - CCE-86982-6
     - high_severity
 
-# ---------------------------------------------------------------------------------------
-# Beyond-benchmark product hardening, moved out of the factory (decision 0021: StigForge
-# roles own ALL hardening).
-#
-# These are NOT required by this profile. Verified against the SSG datastream:
-#   - kernel_module_{dccp,freevxfs,hfs,hfsplus,jffs2,udf}_disabled are CIS rules, not STIG.
-#     Only cramfs (RHEL-09-231195), sctp (RHEL-09-213060) and tipc (RHEL-09-213065) are in
-#     the stig profile. On Ubuntu NONE of the nine are.
-#   - sysctl_fs_suid_dumpable is in anssi/ccn/hipaa/pci-dss on RHEL and CIS on Ubuntu -
-#     in neither the RHEL stig nor the RHEL cis profile.
-#
-# StigReady applies them to every hardened image anyway: CIS-grade module blacklisting and
-# suid-dump hardening on a STIG image costs nothing at runtime and is strictly safer. That
-# is a PRODUCT decision, which is why it lives in the role rather than being argued as a
-# benchmark requirement.
-#
-# Tagged DISA/CCE only where a real identifier exists. The rest carry no rule-id tag on
-# purpose - the generator derives a toggle from an SSG rule-id tag, and a product decision
-# is not a per-rule opt-out. Idempotent: harmless where the profile already covers a module.
 - name: Product hardening | Ensure kernel module 'cramfs' is disabled
   ansible.builtin.copy:
     dest: /etc/modprobe.d/cramfs.conf
