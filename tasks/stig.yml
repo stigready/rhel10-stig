@@ -383,6 +383,8 @@
     ansible.builtin.debug:
       msg: 'StigForge: ''Ensure crypto-policies is installed'' raised an error (module or templating) and was skipped; continuing
         so later rules still run. OpenSCAP evaluates the resulting system state independently.'
+  when: (stigforge_rules_enabled | default(true) | bool) and (rhel10stig_package_crypto_policies_installed | default(true)
+    | bool)
 - name: 'StigForge: refresh package facts after ''Ensure crypto-policies is installed'' installed a package'
   ansible.builtin.package_facts:
     manager: auto
@@ -500,6 +502,8 @@
     ansible.builtin.debug:
       msg: 'StigForge: ''Ensure gnutls-utils is installed'' raised an error (module or templating) and was skipped; continuing
         so later rules still run. OpenSCAP evaluates the resulting system state independently.'
+  when: (stigforge_rules_enabled | default(true) | bool) and (rhel10stig_package_gnutls_utils_installed | default(true) |
+    bool)
 - name: 'StigForge: refresh package facts after ''Ensure gnutls-utils is installed'' installed a package'
   ansible.builtin.package_facts:
     manager: auto
@@ -528,6 +532,7 @@
     ansible.builtin.debug:
       msg: 'StigForge: ''Ensure nss-tools is installed'' raised an error (module or templating) and was skipped; continuing
         so later rules still run. OpenSCAP evaluates the resulting system state independently.'
+  when: (stigforge_rules_enabled | default(true) | bool) and (rhel10stig_package_nss_tools_installed | default(true) | bool)
 - name: 'StigForge: refresh package facts after ''Ensure nss-tools is installed'' installed a package'
   ansible.builtin.package_facts:
     manager: auto
@@ -558,6 +563,7 @@
     ansible.builtin.debug:
       msg: 'StigForge: ''Ensure sequoia-sq is installed'' raised an error (module or templating) and was skipped; continuing
         so later rules still run. OpenSCAP evaluates the resulting system state independently.'
+  when: (stigforge_rules_enabled | default(true) | bool) and (rhel10stig_package_sequoia_sq_installed | default(true) | bool)
 - name: 'StigForge: refresh package facts after ''Ensure sequoia-sq is installed'' installed a package'
   ansible.builtin.package_facts:
     manager: auto
@@ -671,6 +677,8 @@
     ansible.builtin.debug:
       msg: 'StigForge: ''Ensure pcsc-lite-ccid is installed'' raised an error (module or templating) and was skipped; continuing
         so later rules still run. OpenSCAP evaluates the resulting system state independently.'
+  when: (stigforge_rules_enabled | default(true) | bool) and (rhel10stig_package_pcsc_lite_ccid_installed | default(true)
+    | bool)
 - name: 'StigForge: refresh package facts after ''Ensure pcsc-lite-ccid is installed'' installed a package'
   ansible.builtin.package_facts:
     manager: auto
@@ -699,6 +707,8 @@
     ansible.builtin.debug:
       msg: 'StigForge: ''Ensure rsyslog-gnutls is installed'' raised an error (module or templating) and was skipped; continuing
         so later rules still run. OpenSCAP evaluates the resulting system state independently.'
+  when: (stigforge_rules_enabled | default(true) | bool) and (rhel10stig_package_rsyslog_gnutls_installed | default(true)
+    | bool)
 - name: 'StigForge: refresh package facts after ''Ensure rsyslog-gnutls is installed'' installed a package'
   ansible.builtin.package_facts:
     manager: auto
@@ -833,6 +843,8 @@
     ansible.builtin.debug:
       msg: 'StigForge: ''Ensure policycoreutils-python-utils is installed'' raised an error (module or templating) and was
         skipped; continuing so later rules still run. OpenSCAP evaluates the resulting system state independently.'
+  when: (stigforge_rules_enabled | default(true) | bool) and (rhel10stig_package_policycoreutils_python_utils_installed |
+    default(true) | bool)
 - name: 'StigForge: refresh package facts after ''Ensure policycoreutils-python-utils is installed'' installed a package'
   ansible.builtin.package_facts:
     manager: auto
@@ -1038,6 +1050,7 @@
     ansible.builtin.debug:
       msg: 'StigForge: ''Ensure s-nail is installed'' raised an error (module or templating) and was skipped; continuing so
         later rules still run. OpenSCAP evaluates the resulting system state independently.'
+  when: (stigforge_rules_enabled | default(true) | bool) and (rhel10stig_package_s_nail_installed | default(true) | bool)
 - name: 'StigForge: refresh package facts after ''Ensure s-nail is installed'' installed a package'
   ansible.builtin.package_facts:
     manager: auto
@@ -1066,6 +1079,7 @@
     ansible.builtin.debug:
       msg: 'StigForge: ''Uninstall nfs-utils Package: Ensure nfs-utils is removed'' raised an error (module or templating)
         and was skipped; continuing so later rules still run. OpenSCAP evaluates the resulting system state independently.'
+  when: (stigforge_rules_enabled | default(true) | bool) and (rhel10stig_package_nfs_utils_removed | default(true) | bool)
 - block:
   - name: Ensure chrony is installed
     ansible.builtin.package:
@@ -1124,6 +1138,7 @@
     ansible.builtin.debug:
       msg: 'StigForge: ''Uninstall telnet-server Package: Ensure telnet-server is removed'' raised an error (module or templating)
         and was skipped; continuing so later rules still run. OpenSCAP evaluates the resulting system state independently.'
+  when: (stigforge_rules_enabled | default(true) | bool) and (rhel10stig_package_telnet_server_removed | default(true) | bool)
 - block:
   - name: 'Uninstall tftp-server Package: Ensure tftp-server is removed'
     ansible.builtin.package:
@@ -1149,6 +1164,7 @@
     ansible.builtin.debug:
       msg: 'StigForge: ''Uninstall tftp-server Package: Ensure tftp-server is removed'' raised an error (module or templating)
         and was skipped; continuing so later rules still run. OpenSCAP evaluates the resulting system state independently.'
+  when: (stigforge_rules_enabled | default(true) | bool) and (rhel10stig_package_tftp_server_removed | default(true) | bool)
 - block:
   - name: 'Remove tftp Daemon: Ensure tftp is removed'
     ansible.builtin.package:
@@ -1191,6 +1207,8 @@
     ansible.builtin.debug:
       msg: 'StigForge: ''Ensure openssh-clients is installed'' raised an error (module or templating) and was skipped; continuing
         so later rules still run. OpenSCAP evaluates the resulting system state independently.'
+  when: (stigforge_rules_enabled | default(true) | bool) and (rhel10stig_package_openssh_clients_installed | default(true)
+    | bool)
 - name: 'StigForge: refresh package facts after ''Ensure openssh-clients is installed'' installed a package'
   ansible.builtin.package_facts:
     manager: auto
@@ -1220,6 +1238,8 @@
     ansible.builtin.debug:
       msg: 'StigForge: ''Ensure openssh-server is installed'' raised an error (module or templating) and was skipped; continuing
         so later rules still run. OpenSCAP evaluates the resulting system state independently.'
+  when: (stigforge_rules_enabled | default(true) | bool) and (rhel10stig_package_openssh_server_installed | default(true)
+    | bool)
 - name: 'StigForge: refresh package facts after ''Ensure openssh-server is installed'' installed a package'
   ansible.builtin.package_facts:
     manager: auto
@@ -1355,6 +1375,8 @@
     ansible.builtin.debug:
       msg: 'StigForge: ''Ensure audispd-plugins is installed'' raised an error (module or templating) and was skipped; continuing
         so later rules still run. OpenSCAP evaluates the resulting system state independently.'
+  when: (stigforge_rules_enabled | default(true) | bool) and (rhel10stig_package_audispd_plugins_installed | default(true)
+    | bool)
 - name: 'StigForge: refresh package facts after ''Ensure audispd-plugins is installed'' installed a package'
   ansible.builtin.package_facts:
     manager: auto
@@ -1450,7 +1472,7 @@
     ansible.builtin.debug:
       msg: 'StigForge: ''Disable debug-shell SystemD Service - Disable service debug-shell'' raised an error (module or templating)
         and was skipped; continuing so later rules still run. OpenSCAP evaluates the resulting system state independently.'
-  when: (stigforge_rules_enabled | default(true) | bool) and (rhel10stig_special_service_block | default(true) | bool)
+  when: (stigforge_rules_enabled | default(true) | bool) and (rhel10stig_service_debug_shell_disabled | default(true) | bool)
 - block:
   - name: Enable rsyslog Service - Enable service rsyslog
     block:
@@ -1510,7 +1532,8 @@
     ansible.builtin.debug:
       msg: 'StigForge: ''Enable systemd-journald Service - Enable service systemd-journald'' raised an error (module or templating)
         and was skipped; continuing so later rules still run. OpenSCAP evaluates the resulting system state independently.'
-  when: (stigforge_rules_enabled | default(true) | bool) and (rhel10stig_special_service_block | default(true) | bool)
+  when: (stigforge_rules_enabled | default(true) | bool) and (rhel10stig_service_systemd_journald_enabled | default(true)
+    | bool)
 - block:
   - name: Disable the Automounter - Disable service autofs
     block:
@@ -1712,7 +1735,7 @@
     ansible.builtin.debug:
       msg: 'StigForge: ''Enable the OpenSSH Service - Enable service sshd'' raised an error (module or templating) and was
         skipped; continuing so later rules still run. OpenSCAP evaluates the resulting system state independently.'
-  when: (stigforge_rules_enabled | default(true) | bool) and (rhel10stig_special_service_block | default(true) | bool)
+  when: (stigforge_rules_enabled | default(true) | bool) and (rhel10stig_service_sshd_enabled | default(true) | bool)
 - block:
   - name: Enable the USBGuard Service - Enable service usbguard
     block:
@@ -11298,7 +11321,7 @@
     ansible.builtin.lineinfile:
       path: /etc/security/pwquality.conf
       create: true
-      regexp: ''
+      regexp: ^\s*enforce_for_root\s*$
       line: enforce_for_root
       state: present
     when:
@@ -18145,6 +18168,7 @@
       msg: 'StigForge: "Setting unquoted shell-style assignment of ''FirewallBackend'' to ''nftables'' in ''/etc/firewalld/firewalld.conf''"
         raised an error (module or templating) and was skipped; continuing so later rules still run. OpenSCAP evaluates the
         resulting system state independently.'
+  when: (stigforge_rules_enabled | default(true) | bool) and (rhel10stig_firewalld_backend | default(true) | bool)
 - block:
   - name: Configure Accepting Router Advertisements on All IPv6 Interfaces - Set fact for sysctl paths
     ansible.builtin.set_fact:
@@ -27406,6 +27430,8 @@
     ansible.builtin.debug:
       msg: 'StigForge: "Ensure kernel module ''usb-storage'' is disabled" raised an error (module or templating) and was skipped;
         continuing so later rules still run. OpenSCAP evaluates the resulting system state independently.'
+  when: (stigforge_rules_enabled | default(true) | bool) and (rhel10stig_kernel_module_usb_storage_disabled | default(true)
+    | bool)
 - block:
   - name: Ensure kernel module 'usb-storage' is blacklisted
     ansible.builtin.lineinfile:
@@ -27437,6 +27463,8 @@
     ansible.builtin.debug:
       msg: 'StigForge: "Ensure kernel module ''usb-storage'' is blacklisted" raised an error (module or templating) and was
         skipped; continuing so later rules still run. OpenSCAP evaluates the resulting system state independently.'
+  when: (stigforge_rules_enabled | default(true) | bool) and (rhel10stig_kernel_module_usb_storage_disabled | default(true)
+    | bool)
 - block:
   - name: 'Add nosuid Option to /boot/efi: Check information associated to mountpoint'
     ansible.builtin.command: findmnt --fstab '/boot/efi'
@@ -32871,6 +32899,8 @@
       msg: 'StigForge: ''Disable acquiring, saving, and processing core dumps - Collect systemd Socket Units Present in the
         System'' raised an error (module or templating) and was skipped; continuing so later rules still run. OpenSCAP evaluates
         the resulting system state independently.'
+  when: (stigforge_rules_enabled | default(true) | bool) and (rhel10stig_service_systemd_coredump_disabled | default(true)
+    | bool)
 - block:
   - name: Disable acquiring, saving, and processing core dumps - Ensure systemd-coredump.socket is Masked
     ansible.builtin.systemd:
@@ -32898,6 +32928,8 @@
       msg: 'StigForge: ''Disable acquiring, saving, and processing core dumps - Ensure systemd-coredump.socket is Masked''
         raised an error (module or templating) and was skipped; continuing so later rules still run. OpenSCAP evaluates the
         resulting system state independently.'
+  when: (stigforge_rules_enabled | default(true) | bool) and (rhel10stig_service_systemd_coredump_disabled | default(true)
+    | bool)
 - block:
   - name: Disable core dump backtraces - Search for a section in files
     ansible.builtin.find:
